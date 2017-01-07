@@ -1,0 +1,30 @@
+.highlight-window{
+  position:fixed;
+  top:-20px;
+  left:-20px;
+  width:110%;
+  height:110%;
+  z-index: 2000000;
+  border: 10000px solid rgba(0,0,0,.6);
+  margin-left: -10000px;
+  margin-top: -10000px;
+  box-shadow: inset 0 0 0 4px #038BCF, inset 0 0 20px rgba(0,0,0,0.4);
+  pointer-events: none;
+  -webkit-border-radius:10010px;
+  -moz-border-radius:10010px;
+  border-radius:10010px;
+  transition: all .6s ease .3s,border-radius .3s ease;
+  -webkit-transition: all .6s ease .3s,border-radius .3s ease;
+  -moz-transition: all .6s ease .3s,border-radius .3s ease;
+  -ms-transition: all .6s ease .3s,border-radius .3s ease;
+  -o-transition: all .6s ease .3s,border-radius .3s ease;
+  display:none;
+}
+
+.highlight-window-content{
+  width:100%;
+  height:100%;
+  position:absolute !important;
+  top:0;
+  left:0;
+}
