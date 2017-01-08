@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/mstennie/highlight-window/issues"
   },
-  "homepage": "https://github.com/mstennie/highlight-window#readme"
+  "homepage": "https://github.com/mstennie/highlight-window#readme",
+  "dependencies": {
+    "jquery": "^3.1.1"
+  }
 }

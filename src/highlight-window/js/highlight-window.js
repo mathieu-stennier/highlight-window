@@ -1,62 +1,95 @@
-(function ( $ ) {
+;(function ( $, window, document, undefined ) {
 
-    var obsConfig = { childList: true };
+    var htmlHighlight = '<div id="highlight-window"><div class="highlight-window-content"></div></div>';
 
-    $.fn.windowhighlight = function(action) {
-        if (typeof action === 'undefined' || action === 'init'){
-            $('body').prepend($(this).detach());
-            $(this).show();
-            var self = this;
-            var startSelector = $(self).data('start');
-            if(typeof startSelector === "undefined" || startSelector == null){
-                var selectorStrategy = arguments[1];
-                if (typeof selectorStrategy === 'function'){
-                    startSelector = selectorStrategy.call();
-                }
-                else{
-                    console.log('selectorStrategy argument is not valid. Must be a function that returns a selector');
+    function isNotNullOrUndefined(elem){return (typeof elem !== 'undefined' && elem != null);}
+    function isNullOrUndefined(elem){return (typeof elem === 'undefined' || elem == null);}
+
+    /* Plugin name and defaults */
+    var pluginName = 'highlightWindow',
+        defaults = {
+            style:{
+                borderColor:'#038BCF',
+                highlightColor: 'rgba(255,255,255,.7)',
+                paddingHighlight: 20,
+                minHeight: 100,
+                minWidth: 100
+            },
+            disallowClickOn:'none'
+        };
+
+    function HighlightWindow(options){
+        this.settings = $.extend( {}, defaults, options );
+        this.highlightDOMElem = null;
+        this.init();
+    }
+
+    $.extend( HighlightWindow.prototype, {
+        init: function() {
+            $('body').prepend(htmlHighlight);
+            this.highlightDOMElem = $('#highlight-window')[0];
+            return this;
+        },
+        moveTo: function(elementSelector) {
+            if(isNotNullOrUndefined(elementSelector)){
+                var highligh = $(this.highlightDOMElem);
+                highligh.show();
+                var paddingHighlight = this.settings.style.paddingHighlight;
+                var minWidth = this.settings.style.minWidth;
+                var minHeight = this.settings.style.minHeight;
+                if($(elementSelector).length !== 1){
+                    console.log('Element selector is not pointing to only 1 element but :'+$(elementSelector).length);
                     return;
                 }
-            }
-            var forcedHeight = $(self).data('windowheight');
-            var rect = $(startSelector)[0].getBoundingClientRect();
-            $(self).css("top",(rect.top-20)+"px");
-            $(self).css("left",(rect.left-20)+"px");
-            $(self).css("width",(rect.width+40)+"px");
-            if(typeof forcedHeight !== "undefined" && forcedHeight != null){
-                $(self).css("height",forcedHeight+"px");
-            }
-            else{
-                $(self).css("height",(rect.height+40)+"px");
-            }
-            var observerDepth = 0;
-            var myObserver = new MutationObserver(function(mutationRecords){
-                if(observerDepth > 100){
-                    myObserver.disconnect();
-                    return;
-                }
-                console.log(mutationRecords);
-                var rect = $(startSelector)[0].getBoundingClientRect();
-                $(self).css("top",(rect.top-20)+"px");
-                $(self).css("left",(rect.left-20)+"px");
-                $(self).css("width",(rect.width+40)+"px");
-                if(typeof forcedHeight !== "undefined" && forcedHeight != null){
-                    $(self).css("height",forcedHeight+"px");
+                var elemToHighlight = $(elementSelector)[0];
+
+                var rect = elemToHighlight.getBoundingClientRect();
+                highligh.css("top",(rect.top-paddingHighlight)+"px");
+                highligh.css("left",(rect.left-paddingHighlight)+"px");
+
+                if(rect.width < minWidth){
+                    highligh.css("width",minWidth+"px");
                 }
                 else{
-                    $(self).css("height",(rect.height+40)+"px");
+                    highligh.css("width",(rect.width+(paddingHighlight*2)+"px"));
                 }
-                observerDepth++;
-            });
-            myObserver.observe($(startSelector)[0],obsConfig);
-        }
-        if(action === 'hide'){
-            $(this).css("width",'');
-            $(this).css("top",'');
-            $(this).css("left",'');
-            $(this).css("height",'');
-        }
-        return this;
-    };
 
-}( jQuery ));
+                if(rect.height < minHeight){
+                    highligh.css("height",minHeight+"px");
+                }
+                else{
+                    highligh.css("height",(rect.height+(paddingHighlight*2)+"px"));
+                }
+            }
+        },
+        hide : function(){
+            var highlight = $(this.highlightDOMElem);
+            highlight.css("width",'');
+            highlight.css("top",'');
+            highlight.css("left",'');
+            highlight.css("height",'');
+        }
+    } );
+
+    $.extend({
+        highlightWindow: function (action) {
+            if(isNullOrUndefined(action) || action === 'init'){
+                if (!$.data(document.body, "plugin_" + pluginName ) ) {
+                    var newWindowHighlight = new HighlightWindow(arguments[1]);
+                    $.data( document.body, "plugin_" + pluginName, newWindowHighlight);
+                    return newWindowHighlight;
+                }
+            }
+            else if(action === 'moveTo'){
+                var windowHighlight = $.data(document.body, "plugin_" + pluginName);
+                windowHighlight.moveTo(arguments[1]);
+                return windowHighlight;
+            }
+            else if(action === 'hide'){
+                var windowHighlight = $.data(document.body, "plugin_" + pluginName);
+                windowHighlight.hide();
+                return windowHighlight;
+            }
+        }
+    });
+}( jQuery, window, document));
