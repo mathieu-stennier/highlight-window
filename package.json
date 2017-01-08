@@ -1,0 +1,23 @@
+{
+  "name": "highlight-window",
+  "version": "0.1.0",
+  "description": "jQuery plugin to highlight part of your HTML elements",
+  "main": "N/A",
+  "scripts": {
+    "test": "N/A"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mstennie/highlight-window.git"
+  },
+  "keywords": [
+    "highlight",
+    "walkthrough"
+  ],
+  "author": "mstennie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mstennie/highlight-window/issues"
+  },
+  "homepage": "https://github.com/mstennie/highlight-window#readme"
+}
